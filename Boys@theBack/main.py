@@ -31,6 +31,12 @@ class RecordManagementSystem:
                            (user_data['role'], user_data['username'], user_data['email'], user_data['password']))
             self.mysql.connection.commit()
 
+    def insert_teacher_info(self, teacher_data):
+        with self.mysql.connection.cursor() as cursor:
+            cursor.execute("INSERT INTO teacher_info (name, sections) VALUES (%s, %s)", 
+                           (teacher_data['name'], teacher_data['sections']))
+            self.mysql.connection.commit()
+
     def setup_routes(self):
         @self.app.route("/")
         def home():
@@ -59,9 +65,11 @@ class RecordManagementSystem:
             if request.method == 'POST':
                 user_type = request.form['user_type']
                 username = request.form['username']
+                teacher_name = request.form['teacher_name']
                 email = request.form['email']
                 password = request.form['password']
                 confirm_password = request.form['confirm_password']
+                sections = request.form.get('sections', '')
 
                 if password != confirm_password:
                     flash('Passwords do not match', 'danger')
@@ -83,11 +91,16 @@ class RecordManagementSystem:
                     }
                     self.insert_user(user_data)
 
+                    teacher_data = {
+                        'name': teacher_name,
+                        'sections': sections
+                    }
+                    self.insert_teacher_info(teacher_data)
+
                 flash('Account created successfully!', 'success')
                 return redirect(url_for('login'))
 
             return render_template('signup.html')
-        
 
         @self.app.route("/create_account", methods=["GET", "POST"])
         def create_account():
@@ -101,14 +114,13 @@ class RecordManagementSystem:
                     student = cursor.fetchone()
 
                     if student: 
-
                         cursor.execute("INSERT INTO users (user_id, username, password) VALUES (%s, %s, %s)", (user_id, username, password))
                         self.mysql.connection.commit()
-                        return "Account created successfully!"
+                        flash('Account created successfully!', 'success')
+                        return redirect(url_for('admin_dashboard'))
                     else:
-                        return "Student does not exist."
+                        flash('Student does not exist.', 'danger')
                 return render_template("admin_dashboard.html")
-
 
         @self.app.route("/teacher_dashboard")
         def teacher_dashboard():
@@ -119,7 +131,7 @@ class RecordManagementSystem:
 
                 with self.mysql.connection.cursor() as cursor:
                     cursor.execute("SELECT COUNT(*) FROM student_info")
-                    total_students = cursor.fetchone()[0]
+                    total_students = cursor.fetchone()[0 ]
 
                     cursor.execute("SELECT * FROM lesson_plans WHERE teacher_id = %s", (session['username'],))
                     lesson_plans = cursor.fetchall()
@@ -237,7 +249,7 @@ class RecordManagementSystem:
                     'course': request.form['course'],
                     'address': request.form['address'],
                     'age': request.form['age'],
-                    'emerg_name': request.form['emerg_name'],
+                    ' emerg_name': request.form['emerg_name'],
                     'emerg_num': request.form['emerg_num'],
                     'emerg_address': request.form['emerg_address']
                 }
@@ -260,14 +272,18 @@ class RecordManagementSystem:
         @self.app.route('/view-grades')
         def view_grades():
             if 'username' in session and session['role'] == 'teacher':
+                grades= []
                 with self.mysql.connection.cursor() as cursor:
                     cursor.execute("""  
-                        SELECT f_name, m_name, l_name, quiz_score, attendance_behavior_score, 
-                        class_participation_score, exam_score, total_score
+                        SELECT f_name, m_name, l_name, quiz_score, attendance_score, 
+                        participation_score, exam_score, total_score
                         FROM student_info 
                         JOIN student_scores  ON stud_id = student_id""")
                     grades = cursor.fetchall()
                 return render_template('view_grades.html', students=grades)
+            else:
+                 flash('Access denied', 'danger')
+            return redirect(url_for('login'))
 
         @self.app.route("/edit-student/<int:id>", methods=['GET', 'POST'])
         def edit_student(id):
@@ -401,7 +417,7 @@ class RecordManagementSystem:
                 quiz_score = float(request.form['quiz_score'])
                 attendance_behavior_score = float(request.form['attendance_score'])
                 class_participation_score = float(request.form['participation_score'])
-                exam_score = float(request .form['exam_score'])
+                exam_score = float(request.form['exam_score'])
 
                 total_score = (
                     (quiz_score / 20 * 0.25) +
@@ -413,7 +429,7 @@ class RecordManagementSystem:
                 with self.mysql.connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        INSERT INTO student_scores (quiz_score, attendance_behavior_score , class_participation_score, exam_score, total_score)
+                        INSERT INTO student_scores (quiz_score, attendance_behavior_score, class_participation_score, exam_score, total_score)
                         VALUES (%s, %s, %s, %s, %s)
                         """,
                         (quiz_score, attendance_behavior_score, class_participation_score, exam_score, total_score)
@@ -452,7 +468,7 @@ class RecordManagementSystem:
                 flash('Subject added successfully!', 'success')
                 return redirect(url_for('add_subject'))
 
-            with self.mysql.connection.cursor() as cursor:
+            with self.mysql.connection.cursor() as cursor :
                 cursor.execute("SELECT * FROM sections")
                 sections = cursor.fetchall()
 
