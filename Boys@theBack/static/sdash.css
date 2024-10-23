@@ -1,0 +1,239 @@
+/* Base Styles */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 2px solid #34495e;
+    background-color: #fff;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #2c3e50;
+}
+
+.date-time {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-section h2 {
+    margin-top: 0;
+    font-size: 22px;
+    color: #2c3e50;
+}
+
+/* Grades Section */
+.grades-section .table-container {
+    overflow-x: auto;
+}
+
+.grades-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.grades-table th,
+.grades-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.grades-table thead {
+    background-color: #1abc9c;
+    color: #fff;
+}
+
+.grades-table tbody tr:nth-of-type(even) {
+    background-color: #f9f9f9;
+}
+
+/* Announcements Section */
+.announcements-container {
+    margin-top: 10px;
+}
+
+.announcements-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.announcement-item {
+    margin-bottom: 20px;
+}
+
+.announcement-item h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.announcement-date {
+    font-size: 14px;
+    color: #888;
+}
+
+.announcement-details {
+    font-size: 16px;
+}
+
+/* Deadlines Section */
+.deadlines-container {
+    margin-top: 10px;
+}
+
+.deadlines-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.deadline-item {
+    margin-bottom: 20px;
+}
+
+.deadline-item h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.deadline-item p {
+    font-size: 16px;
+}
+
+/* Events Section */
+.events-container {
+    margin-top: 10px;
+}
+
+.events-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.event-item {
+    margin-bottom: 20px;
+}
+
+.event-item h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.event-item p {
+    font-size: 16px;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .header {
+        padding: 10px;
+    }
+
+    .dashboard-section {
+        padding: 15px;
+    }
+
+    .grades-table {
+        font-size: 14px;
+    }
+
+    .btn {
+        font-size: 16px;
+    }
+}
+/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+}
+
+.form-container {
+    background: #fff;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"],
+input[type="number"],
+button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Additional styles for sdash.css and tdash.css can be added as needed. */

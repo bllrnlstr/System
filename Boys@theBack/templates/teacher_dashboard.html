@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="/static/tdash.css">
+</head>
+<body>
+    <header>
+        <button class="toggle-btn" onclick="toggleNav()">☰</button>
+        <h1 class="title">Teacher Dashboard</h1>
+        <div class="auth-date-time">
+            <div class="date-time">
+                <p>{{ date }}</p>
+                <p>{{ time }}</p>
+            </div>
+            <div class="auth-links">
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="sidebar navbar-closed" id="navbar">
+        <ul>
+            <li><a href="{{ url_for('teacher_dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('view_students') }}">View Students</a></li>
+            <li><a href="{{ url_for('add_student') }}">Add Student</a></li>
+            <li><a href="{{ url_for('input_student_scores') }}">Input Student Scores</a></li>
+            <li><a href="{{ url_for('view_grades') }}">View Student Grades</a></li>
+        </ul>
+    </div>
+
+    <div class="header-content">
+        <main>
+            <div class="dashboard-widgets">
+                <div class="widget">
+                    <h2>Upcoming Deadlines</h2>
+                    <a href="{{ url_for('add_deadline') }}" class="add-btn">Add New</a>
+                </div>
+
+                <div class="widget">
+                    <h2>Announcements</h2>
+                    <a href="{{ url_for('add_announcement') }}" class="add-btn">Add New</a>
+                </div>
+
+                <div class="widget">
+                    <h2>Upcoming Events</h2>
+                    <a href="{{ url_for('add_event') }}" class="add-btn">Add New</a>
+                </div>
+
+                <div class="widget">
+                    <h2>Lesson Plans</h2>
+                    <a href="{{ url_for('add_lesson_plan') }}" class="add-btn">Add New</a>
+                </div>
+            </div>
+
+            <div class="total-students-widget">
+                <h2>Total Students</h2>
+                <p>{{ total_students }}</p>
+                <h2>Students Graded</h2>
+                <p>{{ graded_students }}</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleNav() {
+            const sidebar = document.getElementById("navbar");
+            const mainContent = document.querySelector("main");
+            sidebar.classList.toggle("navbar-closed");
+            mainContent.classList.toggle("shifted-content");
+        }
+    </script>
+</body>
+</html>

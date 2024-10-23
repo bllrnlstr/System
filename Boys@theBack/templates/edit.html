@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main>
+        <h1>Edit Student</h1>
+        <form method="post">
+            <label for="newf_name">First Name:</label>
+            <input type="text" id="newf_name" name="newf_name" value="{{ student[2] }}" required>
+
+            <label for="newm_name">Middle Name:</label>
+            <input type="text" id="newm_name" name="newm_name" value="{{ student[3] }}">
+
+            <label for="new_lname">Last Name:</label>
+            <input type="text" id="new_lname" name="new_lname" value="{{ student[4] }}" required>
+
+            <label for="new_suffix">Suffix:</label>
+            <input type="text" id="new_suffix" name="new_suffix" value="{{ student[5] }}">
+
+            <label for="new_lvl">Year Level:</label>
+            <input type="text" id="new_lvl" name="new_lvl" value="{{ student[6] }}" required>
+
+            <label for="new_course">Course:</label>
+            <input type="text" id="new_course" name="new_course" value="{{ student[7] }}" required>
+
+            <label for="new_address">Address:</label>
+            <input type="text" id="new_address" name="new_address" value="{{ student[8] }}" required>
+
+            <label for="new_age">Age:</label>
+            <input type="number" id="new_age" name="new_age" value="{{ student[9] }}" required>
+
+            <label for="new_emerg_name">Emergency Contact Name:</label>
+            <input type="text" id="new_emerg_name" name="new_emerg_name" value="{{ student[10] }}" required>
+
+            <label for="new_emerg_num">Emergency Contact Number:</label>
+            <input type="text" id="new_emerg_num" name="new_emerg_num" value="{{ student[11] }}" required>
+
+            <label for="new_emerg_address">Emergency Contact Address:</label>
+            <input type="text" id="new_emerg_address" name="new_emerg_address" value="{{ student[12] }}" required>
+
+            <button type="submit">Update Student</button>
+        </form>
+    </main>
+</body>
+</html>

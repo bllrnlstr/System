@@ -1,0 +1,81 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+.p{
+    text-align: center;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    text-align: center;
+    gap: 20px;
+    background-image: url('dos.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    text-align: center;
+    gap: 20px;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    z-index: 1;
+}
+
+h1, p, .buttons {
+    z-index: 2; /* Ensure text is above the dark overlay */
+    position: relative;
+    color: #ffffff; /* White text to contrast with dark background */
+}
+
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+p {
+    font-size: 1rem;
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #90ee90;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #74b9ff;
+}
+
+/* Footer styles */
+footer {
+    margin-top: 20px;
+    font-size: 0.8rem;
+    color: #dfe6e9;
+}

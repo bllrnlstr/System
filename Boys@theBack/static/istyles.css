@@ -1,0 +1,234 @@
+/* General styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+/* Header styles */
+header {
+    background-color: #34495e;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.title {
+    margin-left: 10px;
+    font-size: 24px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.toggle-btn {
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 220px; 
+    height: 100vh;
+    background-color: #34495e;
+    color: #ecf0f1;
+    position: fixed;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    padding-top: 100px;
+}
+
+.navbar-closed {
+    width: 0; /* Collapse to 0 width */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    padding: 15px 20px;
+}
+
+.sidebar ul li a {
+    color: #ecf0f1;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #1abc9c;
+    padding-left: 25px;
+}
+
+/* Main content styles */
+.full-page-view {
+    margin-left: 240px; /* Default margin to make space for sidebar */
+    padding: 80px 20px; /* Adjust padding for header */
+    background-color: #ffffff;
+    min-height: 100vh;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: margin-left 0.3s ease;
+}
+
+/* Dropdown and form styles */
+.dropdown-group {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.dropdown-group label {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #2c3e50;
+}
+
+.dropdown-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 200px;
+}
+
+/* Add buttons form */
+.add-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.add-buttons input[type="text"] {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.add-buttons button {
+    padding: 10px 15px;
+    background-color: #1abc9c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+}
+
+.add-buttons button:hover {
+    background-color: #16a085;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    font-size: 16px;
+}
+
+th {
+    background-color: #27ae60;
+    color: white;
+    font-weight: bold;
+}
+
+td {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #e9f7ef;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+td input {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+td input:focus {
+    border-color: #27ae60;
+    outline: none;
+}
+
+/* Total score styles */
+.total-score {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+/* Submit button styles */
+.btn {
+    display: block;
+    background-color: #27ae60;
+    color: white;
+    padding: 12px 20px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 25px auto 0;
+    font-size: 16px;
+    width: 200px;
+}
+
+.btn:hover {
+    background-color: #229954;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px; /* Adjust sidebar width for smaller screens */
+    }
+
+    .full-page-view {
+        margin-left: 200px; /* Adjust margin for smaller screens */
+    }
+}

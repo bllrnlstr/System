@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/static/login.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Sign Up</h1>
+        <form method="post">
+            <div class="input-group">
+                <label for="user_type">User  Type:</label>
+                <select name="user_type" id="user_type" required>
+                    <option value="teacher">Teacher</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="teacher_name">Teacher's Name:</label>
+                <input type="text" id="teacher_name" name="teacher_name" required placeholder="Enter full name">
+            </div>
+
+            <div class="input-group">
+                <label for="subjects">Subjects:</label>
+                <input type="text" id="subjects" name="subjects" required placeholder="Enter subjects separated by commas">
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="input-group">
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+
+            <button type="submit" class="btn">Sign Up</button>
+        </form>
+        <p class="text-center">Already have an account? <a href="{{ url_for('login') }}">Log In</a></p>
+    </div>
+</body>
+</html>

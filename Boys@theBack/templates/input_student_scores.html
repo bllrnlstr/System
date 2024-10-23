@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Student Scores</title>
+    <link rel="stylesheet" href="/static/istyles.css">
+</head>
+<body>
+    <header>
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+        <h1 class="title">Input Student Scores</h1>
+    </header>
+
+    <div class="sidebar" id="navbar">
+        <ul>
+            <li><a href="{{ url_for('teacher_dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('view_students') }}">View Students</a></li>
+            <li><a href="{{ url_for('add_student') }}">Add Student</a></li>
+        </ul>
+    </div>
+
+    <main class="full-page-view">
+        <form method="post" action="{{ url_for('input_student_scores') }}">
+            <div class="dropdown-group">
+                <div>
+                    <label for="section-select">Select Section:</label>
+                    <select id="section-select" name="section" onchange="updateStudentList()">
+                        <option value="">--Select a Section--</option>
+                        {% for section in sections %}
+                            <option value="{{ section }}">{{ section }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="subject-select">Select Subject:</label>
+                    <select id="subject-select" name="subject">
+                        <option value="">--Select a Subject--</option>
+                        {% for subject in subjects %}
+                            <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="add-buttons">
+                <form action="{{ url_for('add_section') }}" method="POST" style="display: inline;">
+                    <input type="text" name="new_section" placeholder="New Section" required>
+                    <button type="submit">Add Section</button>
+                </form>
+
+                <form action="{{ url_for('add_subject') }}" method="POST" style="display: inline;">
+                    <input type="text" name="new_subject" placeholder="New Subject" required>
+                    <button type="submit">Add Subject</button>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Quiz Score</th>
+                        <th>Attendance Score</th>
+                        <th>Participation Score</th>
+                        <th>Exam Score</th>
+                        <th>Total Score</th>
+                    </tr>
+                </thead>
+                <tbody id="student-table-body">
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student[0] }}</td>
+                        <td>{{ student[4] }}, {{ student[2] }}</td>
+                        <td><input type="number" name="quiz_score" required oninput="calculateTotal(this)"></td>
+                        <td><input type="number" name="attendance_score" required oninput="calculateTotal(this)"></td>
+                        <td><input type="number" name="participation_score" required oninput="calculateTotal(this)"></td>
+                        <td><input type="number" name="exam_score" required oninput="calculateTotal(this)"></td>
+                        <td><span class="total-score">0.00</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn">Submit Scores</button>
+        </form>
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('navbar');
+            const mainContent = document.querySelector('.full-page-view');
+            sidebar.classList.toggle('navbar-closed');
+            mainContent.classList.toggle('shifted-content');
+            if (sidebar.classList.contains('navbar-closed')) {
+                mainContent.style.marginLeft = '0';
+            } else {
+                mainContent.style.marginLeft = '240px'; 
+            }
+        }
+
+        function calculateTotal(input) {
+            const row = input.closest('tr');
+            const quizScore = parseFloat(row.querySelector('input[name="quiz_score"]').value) || 0;
+            const attendanceScore = parseFloat(row.querySelector('input[name="attendance_score"]').value) || 0;
+            const participationScore = parseFloat(row.querySelector('input[name="participation_score"]').value) || 0;
+            const examScore = parseFloat(row.querySelector('input[name="exam_score"]').value) || 0;
+            const totalScore = quizScore + attendanceScore + participationScore + examScore;
+            row.querySelector('.total-score').textContent = totalScore.toFixed(2);
+        }
+
+        function updateStudentList() {
+            const sectionSelect = document.getElementById('section-select');
+            const selectedSection = sectionSelect.value;
+
+           
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Subject</title>
+    <link rel="stylesheet" href="/static/add_subject.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <h1>Add Subject</h1>
+    <form method="POST">
+        <label for="subject_name">Subject Name:</label>
+        <input type="text" id="subject_name" name="subject_name" required>
+
+        <label for="section_id">Section:</label>
+        <select id="section_id" name="section_id" required>
+            {% for section in sections %}
+                <option value="{{ section.id }}">{{ section.section_name }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Add Subject">
+    </form>
+</body>
+</html>

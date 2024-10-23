@@ -1,0 +1,40 @@
+<!-- templates/view_grades.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Grades</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Student Grades</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Quiz Score</th>
+                <th>Attendance Score</th>
+                <th>Participation Score</th>
+                <th>Exam Score</th>
+                <th>Total Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            {% for section in sections %}
+            <tr>
+                <td>{{ student[2] }} {{ student[3] }} {{ student[4] }}</td> <!-- Assuming f_name, m_name, l_name are in columns 1, 2, 3 -->
+                <td>{{ section[3] }}</td> <!-- Assuming quiz_score is in column 4 -->
+                <td>{{ student[4] }}</td> <!-- Assuming attendance_score is in column 5 -->
+                <td>{{ student[5] }}</td> <!-- Assuming class_participation_score is in column 6 -->
+                <td>{{ student[6] }}</td> <!-- Assuming exam_score is in column 7 -->
+                <td>{{ student[7] }}</td> <!-- Assuming total_score is in column 8 -->
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('teacher_dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

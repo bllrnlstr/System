@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Students</title>
+    <link rel="stylesheet" href="/static/view.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+        <h1 class="title">View Students</h1>
+    </header>
+
+    <div class="sidebar navbar-closed" id="navbar">
+        <ul>
+            <li><a href="{{ url_for('teacher_dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('view_students') }}">View Students</a></li>
+            <li><a href="{{ url_for('add_student') }}">Add Student</a></li>
+            <li><a href="{{ url_for('input_student_scores') }}">Input Grade</a></li>
+        </ul>
+    </div>
+
+    <main id="main-content">
+        <h1>Student List</h1>
+
+        <select id="section-select" name="section" onchange="updateStudentList()">
+            <option value="">--Select a Section--</option>
+            {% for section in sections %}
+                <option value="{{ section }}">{{ section }}</option>
+            {% endfor %}
+        </select>
+
+        <table class="student-table">
+            <thead>
+                <tr>
+                    <th>LRN Number</th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                    <th>Suffix</th>
+                    <th>Year Level</th>
+                    <th>Course</th>
+                    <th>Address</th>
+                    <th>Age</th>
+                    <th>Emergency Contact Name</th>
+                    <th>Emergency Contact Number</th>
+                    <th>Emergency Contact Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="student-table-body">
+                {% for section, students in students_by_section.items() %}
+                <tr>
+                    <th colspan="13">{{ section }}</th>
+                </tr>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student[1] }}</td>
+                    <td>{{ student[2] }}</td>
+                    <td>{{ student[3] }}</td>
+                    <td>{{ student[4] }}</td>
+                    <td>{{ student[5] }}</td>
+                    <td>{{ student[6] }}</td>
+                    <td>{{ student[7] }}</td>
+                    <td>{{ student[8] }}</td>
+                    <td>{{ student[9] }}</td>
+                    <td>{{ student[10] }}</td>
+                    <td>{{ student[11] }}</td>
+                    <td>{{ student[12] }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_student', id=student[0]) }}" class="edit-btn">Edit</a>
+                        <form action="{{ url_for('delete_student', id=student[0]) }}" method="POST">
+                            <button type="submit" class="delete-btn" onclick="return confirm('Are you sure?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="adding">
+            <a href="{{ url_for('add_student') }}" class="add-btn">Add New Student</a>
+        </div>
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('navbar');
+            const mainContent = document.getElementById('main-content');
+            sidebar.classList.toggle('navbar-closed');
+            mainContent.classList.toggle('shifted-content');
+        }
+    </script>
+</body>
+</html>

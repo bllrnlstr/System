@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Lesson Plan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Add Lesson Plan</h1>
+        <a href="{{ url_for('teacher_dashboard') }}">Back to Dashboard</a>
+    </header>
+    <main>
+        <form method="post">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            <label for="lesson_date">Date:</label>
+            <input type="date" id="lesson_date" name="lesson_date" required>
+            <label for="details">Details:</label>
+            <textarea id="details" name="details" required></textarea>
+            <button type="submit">Add Lesson Plan</button>
+        </form>
+    </main>
+</body>
+</html>

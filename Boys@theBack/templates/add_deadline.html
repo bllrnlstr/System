@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Deadline</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Add Deadline</h1>
+        <a href="{{ url_for('teacher_dashboard') }}">Back to Dashboard</a>
+    </header>
+    <main>
+        <form method="post">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            <label for="deadline_date">Date:</label>
+            <input type="date" id="deadline_date" name="deadline_date" required>
+            <button type="submit">Add Deadline</button>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/admin_dashboard.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+
+        <!-- Reports -->
+        <div class="user-counts">
+            <p><strong>Total Teachers:</strong> {{ teacher_count }}</p>
+            <p><strong>Total Students:</strong> {{ student_count }}</p>
+        </div>
+
+        <h2>Users</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user[0] }}</td>
+                    <td>{{ user[1] }}</td>
+                    <td>{{ user[2] }}</td> 
+                    <td>{{ user[3] }}</td> 
+                    <td>{{ user[4] }}</td> 
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Teachers</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Teacher ID</th>
+                    <th>Name</th>
+                    <th>Handled Section</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for teacher in teachers %}
+                <tr>
+                    <td>{{ teacher[0] }}</td>
+                    <td>{{ teacher[1] }}</td>
+                    <td>{{ teacher[2] }}</td>
+                    <td>{{ teacher[3] }}</td>
+                    <td>
+                        <select name="section" id="section_{{ teacher[0] }}">
+                            <option value="">{{ teacher[4] }}</option>
+                            {% for section in all_sections %}
+                            <option value="{{ section[0] }}">{{ section[0] }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Students Table -->
+        <h2>Students</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                    <th>Year Level</th>
+                    <th>Section</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student[0] }}</td>
+                    <td>{{ student[1] }}</td>
+                    <td>{{ student[2] }}</td>
+                    <td>{{ student[3] }}</td>
+                    <td>{{ student[4] }}</td>
+                    <td>{{ student[5] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2 class="h2">Create Student Account</h2>
+        <form action="/create_account" method="POST">
+            <label for="user_id">Student ID:</label>
+            <input type="text" id="user_id" name="user_id" required pattern="\d+" title="Please enter a valid student ID.">
+            
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required title="Username is required.">
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required title="Password is required.">
+            <p id="password-strength"></p>
+
+            <input type="submit" value="Create Student Account">
+        </form>
+    </div>
+</body>
+</html>

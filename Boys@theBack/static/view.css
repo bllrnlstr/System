@@ -1,0 +1,156 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+header {
+    background-color: #34495e;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.title {
+    margin-left: 10px;
+    font-size: 24px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.toggle-btn {
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background-color: #34495e;
+    position: fixed;
+    top: 0;
+    left: -220px;
+    transition: left 0.3s;
+    z-index: 1;
+    padding-top: 60px;
+}
+
+.sidebar.navbar-closed {
+    left: 0;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    margin: 15px 0;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+}
+
+.sidebar a:hover {
+    background-color: #1abc9c;
+    border-radius: 4px;
+}
+
+/* Main Content Styles */
+main {
+    margin-left: 220px;
+    padding: 80px 20px;
+    transition: margin-left 0.3s;
+}
+
+.shifted-content {
+    margin-left: 0;
+}
+
+/* Table Styles */
+.student-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.student-table th, .student-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.student-table th {
+    background-color: #567492;
+    color: white;
+}
+
+.student-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Action Buttons */
+.edit-btn, .delete-btn {
+    padding: 8px 16px;
+    color: white;
+    border-radius: 4px;
+    margin: 5px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.edit-btn {
+    background-color: #28a745;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+}
+
+.edit-btn:hover {
+    background-color: #218838;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Add Button */
+.add-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.add-btn:hover {
+    background-color: #0056b3;
+}
