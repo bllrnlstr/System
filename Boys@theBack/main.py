@@ -120,10 +120,10 @@ class RecordManagementSystem:
 
                     with self.mysql.connection.cursor() as cursor:
                         cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
-                        existing_user = cursor.fetchone ()
+                        existing_user = cursor.fetchone()
 
                         if existing_user:
-                            flash('Username already taken . Please choose another one.', 'warning')
+                            flash('Username already taken. Please choose another one.', 'warning')
                             return redirect(url_for('create_account'))
                         
                         cursor.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, %s)", (username, password, 'student'))
@@ -214,7 +214,7 @@ class RecordManagementSystem:
                     cursor.execute("SELECT * FROM users")
                     users = cursor.fetchall()
 
-                    cursor.execute("SELECT stud_id, f_name, m_name, l_name, year_lvl, section FROM student_info")
+                    cursor.execute("SELECT stud_id, f_name, m_name, l_name, year_lvl, sections   FROM student_info")
                     students = cursor.fetchall()
 
                     cursor.execute("""
@@ -254,10 +254,10 @@ class RecordManagementSystem:
 
         @self.app.route("/students")
         def view_students():
-            with self.mysql.connection.cursor () as cursor:
+            with self.mysql.connection.cursor() as cursor:
                 cursor.execute("SELECT * FROM student_info")
                 students = cursor.fetchall()
-            selected_section = request.args.get('section')
+            selected_section = request.args.get(' section')
             with self.mysql.connection.cursor() as cursor:
                 cursor.execute("SELECT * FROM student_info")
                 students = cursor.fetchall ()
@@ -412,7 +412,7 @@ class RecordManagementSystem:
                 with self.mysql.connection.cursor() as cursor:
                     cursor.execute(
                         "INSERT INTO events (title, date, teacher_id) VALUES (%s, %s, %s)",
-                        (title, event_date, session['username'])
+                        (title, event_date, session['username '])
                     )
                     self.mysql.connection.commit()
 
@@ -467,6 +467,7 @@ class RecordManagementSystem:
                 attendance_behavior_score = float(request.form['attendance_score'])
                 class_participation_score = float(request.form['participation_score'])
                 exam_score = float(request.form['exam_score'])
+                student_id = request.form['student_id']  # Get the student ID from the form
 
                 total_score = (
                     (quiz_score / 20 * 0.25) +
@@ -475,23 +476,36 @@ class RecordManagementSystem:
                     (exam_score / 60 * 0.50)
                 ) * 100
 
+                # Insert the scores into the student_scores table
                 with self.mysql.connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        INSERT INTO student_scores (quiz_score, attendance_score, participation_score, exam_score, total_score)
-                        VALUES (%s, %s, %s, %s, %s)
+                        INSERT INTO student_scores (stud_id, quiz_score, attendance_score, participation_score, exam_score, total_score)
+                        VALUES (%s, %s, %s, %s, %s, %s)
                         """,
-                        (quiz_score, attendance_behavior_score, class_participation_score, exam_score, total_score)
+                        (student_id, quiz_score, attendance_behavior_score, class_participation_score, exam_score, total_score)
                     )
                     self.mysql.connection.commit()
 
-                flash('Scores entered successfully!', 'success')
+                # Insert or update the enrollment in the enrolled_students table
+                with self.mysql.connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        INSERT INTO enrolled_students (stud_id, subject_name, section_name)
+                        VALUES (%s, %s, %s)
+                        ON DUPLICATE KEY UPDATE subject_name = %s, section_name = %s
+                        """,
+                        (student_id, request.form['subject_name'], request.form['section_name'], request.form['subject_name'], request.form['section_name'])
+                    )
+                    self.mysql.connection.commit()
+
+                flash('Scores entered and enrollment updated successfully!', 'success')
                 return redirect(url_for('input_student_scores'))
 
             with self.mysql.connection.cursor() as cursor:
                 cursor.execute("SELECT * FROM student_info")
                 students = cursor.fetchall()
-                
+
             selected_section = request.args.get('section')
             selected_subject = request.args.get('subject')
 
@@ -509,7 +523,7 @@ class RecordManagementSystem:
                     students = cursor.fetchall()
 
             with self.mysql.connection.cursor() as cursor:
-                cursor.execute("SELECT DISTINCT section FROM student_info")
+                cursor.execute("SELECT DISTINCT sections FROM student_info")
                 sections = cursor.fetchall()
 
             with self.mysql.connection.cursor() as cursor:
