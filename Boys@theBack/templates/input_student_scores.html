@@ -56,7 +56,7 @@
                 </form>
             </div>
 
-            <table>
+            <table class="student-table">
                 <thead>
                     <tr>
                         <th>Student ID</th>
@@ -65,7 +65,7 @@
                         <th>Attendance Score</th>
                         <th>Participation Score</th>
                         <th>Exam Score</th>
-                        <th>Total Score</th>
+                        <th>Total Grade</th>
                     </tr>
                 </thead>
                 <tbody id="student-table-body">
@@ -73,10 +73,10 @@
                     <tr>
                         <td>{{ student[0] }}</td>
                         <td>{{ student[4] }}, {{ student[2] }}</td>
-                        <td><input type="number" name="quiz_score" required oninput="calculateTotal(this)"></td>
-                        <td><input type="number" name="attendance_score" required oninput="calculateTotal(this)"></td>
-                        <td><input type="number" name="participation_score" required oninput="calculateTotal(this)"></td>
-                        <td><input type="number" name="exam_score" required oninput="calculateTotal(this)"></td>
+                        <td><input type="number" name="quiz_score_{{ student[0] }}" required oninput="calculateTotal(this)"></td>
+                        <td><input type="number" name="attendance_score_{{ student[0] }}" required oninput="calculateTotal(this)"></td>
+                        <td><input type="number" name="participation_score_{{ student[0] }}" required oninput="calculateTotal(this)"></td>
+                        <td><input type="number" name="exam_score_{{ student[0] }}" required oninput="calculateTotal(this)"></td>
                         <td><span class="total-score">0.00</span></td>
                     </tr>
                     {% endfor %}
@@ -101,11 +101,11 @@
 
         function calculateTotal(input) {
             const row = input.closest('tr');
-            const quizScore = parseFloat(row.querySelector('input[name="quiz_score"]').value) || 0;
-            const attendanceScore = parseFloat(row.querySelector('input[name="attendance_score"]').value) || 0;
-            const participationScore = parseFloat(row.querySelector('input[name="participation_score"]').value) || 0;
-            const examScore = parseFloat(row.querySelector('input[name="exam_score"]').value) || 0;
-            const totalScore = quizScore + attendanceScore + participationScore + examScore;
+            const quizScore = parseFloat(row.querySelector('input[name^="quiz_score"]').value) || 0;
+            const attendanceScore = parseFloat(row.querySelector('input[name^="attendance_score"]').value) || 0;
+            const participationScore = parseFloat(row.querySelector('input[name^="participation_score"]').value) || 0;
+            const examScore = parseFloat(row.querySelector('input[name^="exam_score"]').value) || 0;
+            const totalScore = (quizScore / 20 * 25) + (attendanceScore / 30 * 10) + (participationScore / 50 * 15) + (examScore / 60 * 50);
             row.querySelector('.total-score').textContent = totalScore.toFixed(2);
         }
 
@@ -113,7 +113,31 @@
             const sectionSelect = document.getElementById('section-select');
             const selectedSection = sectionSelect.value;
 
-           
+            if (selectedSection) {
+                fetch(`/get_students_by_section?section=${selectedSection}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBody = document.getElementById('student-table-body');
+                        tableBody.innerHTML = ''; // Clear existing rows
+
+                        // Populate the table with students from the selected section
+                        data.forEach(student => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${student.stud_id}</td>
+                                <td>${student.l_name}, ${student.f_name}</td>
+                                <td><input type="number" name="quiz_score_${student.stud_id}" required oninput="calculateTotal(this)"></td>
+                                <td><input type="number" name="attendance_score_${student.stud_id}" required oninput="calculateTotal(this)"></td>
+                                <td><input type="number" name="participation_score_${student.stud_id}" required oninput="calculateTotal(this)"></td>
+                                <td><input type="number" name="exam_score_${student.stud_id}" required oninput="calculateTotal(this)"></td>
+                                <td><span class="total-score">0.00</span></td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    });
+            } else {
+                document.getElementById('student-table-body').innerHTML = '';
+            }
         }
     </script>
 </body>

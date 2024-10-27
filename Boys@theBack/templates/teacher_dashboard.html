@@ -13,7 +13,7 @@
         <div class="auth-date-time">
             <div class="date-time">
                 <p>{{ date }}</p>
-                <p>{{ time }}</p>
+                <p id="time">{{ time }}</p> <!-- Added ID for time display -->
             </div>
             <div class="auth-links">
                 <a href="{{ url_for('logout') }}">Logout</a>
@@ -31,38 +31,36 @@
         </ul>
     </div>
 
-    <div class="header-content">
-        <main>
-            <div class="dashboard-widgets">
-                <div class="widget">
-                    <h2>Upcoming Deadlines</h2>
-                    <a href="{{ url_for('add_deadline') }}" class="add-btn">Add New</a>
-                </div>
-
-                <div class="widget">
-                    <h2>Announcements</h2>
-                    <a href="{{ url_for('add_announcement') }}" class="add-btn">Add New</a>
-                </div>
-
-                <div class="widget">
-                    <h2>Upcoming Events</h2>
-                    <a href="{{ url_for('add_event') }}" class="add-btn">Add New</a>
-                </div>
-
-                <div class="widget">
-                    <h2>Lesson Plans</h2>
-                    <a href="{{ url_for('add_lesson_plan') }}" class="add-btn">Add New</a>
-                </div>
+    <main class="main-content">
+        <div class="dashboard-widgets">
+            <div class="widget">
+                <h2>Upcoming Deadlines</h2>
+                <a href="{{ url_for('add_deadline') }}" class="add-btn">Add New</a>
             </div>
 
-            <div class="total-students-widget">
-                <h2>Total Students</h2>
-                <p>{{ total_students }}</p>
-                <h2>Students Graded</h2>
-                <p>{{ graded_students }}</p>
+            <div class="widget">
+                <h2>Announcements</h2>
+                <a href="{{ url_for('add_announcement') }}" class="add-btn">Add New</a>
             </div>
-        </main>
-    </div>
+
+            <div class="widget">
+                <h2>Upcoming Events</h2>
+                <a href="{{ url_for('add_event') }}" class="add-btn">Add New</a>
+            </div>
+
+            <div class="widget">
+                <h2>Lesson Plans</h2>
+                <a href="{{ url_for('add_lesson_plan') }}" class="add-btn">Add New</a>
+            </div>
+        </div>
+
+        <div class="total-students-widget">
+            <h2>Total Students</h2>
+            <p>{{ total_students }}</p>
+            <h2>Students Graded</h2>
+            <p>{{ graded_students }}</p>
+        </div>
+    </main>
 
     <script>
         function toggleNav() {
@@ -71,6 +69,18 @@
             sidebar.classList.toggle("navbar-closed");
             mainContent.classList.toggle("shifted-content");
         }
+
+        function updateTime() {
+            const timeElement = document.getElementById('time');
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call to display time immediately
     </script>
 </body>
 </html>

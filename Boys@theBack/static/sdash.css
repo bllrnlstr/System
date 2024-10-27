@@ -237,3 +237,93 @@ button:hover {
 }
 
 /* Additional styles for sdash.css and tdash.css can be added as needed. */
+
+
+
+/* Container for the table */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* General table styles */
+.grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1.2em;
+    text-align: left;
+}
+
+/* Styling for the table header */
+.grades-table th {
+    background-color: #0e627b; /* Dark blue background */
+    color: #ffffff;            /* White text color */
+    padding: 12px;
+    text-align: left;
+}
+
+/* Styling for the table rows */
+.grades-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd; /* Border for rows */
+}
+
+/* Styling for alternating row colors (optional) */
+.grades-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Styling for the table borders */
+.grades-table th, .grades-table td {
+    border: 1px solid #0e627b;
+}
+
+/* Add some hover effect to the rows */
+.grades-table tr:hover {
+    background-color: #e0f4f7;
+}
+
+/* Container for the table */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* General table styles */
+.grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1.2em;
+    text-align: left;
+}
+
+/* Styling for the table header */
+.grades-table th {
+    background-color: #0e627b; /* Dark blue background */
+    color: #ffffff;            /* White text color */
+    padding: 12px;
+    text-align: left;
+}
+
+/* Styling for the table rows */
+.grades-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd; /* Border for rows */
+}
+
+/* Styling for alternating row colors (optional) */
+.grades-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Styling for the table borders */
+.grades-table th, .grades-table td {
+    border: 1px solid #0e627b;
+}
+
+/* Add some hover effect to the rows */
+.grades-table tr:hover {
+    background-color: #e0f4f7;
+}

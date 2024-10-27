@@ -6,6 +6,7 @@
     <title>View Students</title>
     <link rel="stylesheet" href="/static/view.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
 </head>
 <body>
     <header>
@@ -50,11 +51,11 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody id="student-table-body">
-                {% for section, students in students_by_section.items() %}
-                <tr>
-                    <th colspan="13">{{ section }}</th>
-                </tr>
+
+           
+
+            <!-- Student Rows -->
+            <tbody>
                 {% for student in students %}
                 <tr>
                     <td>{{ student[1] }}</td>
@@ -77,8 +78,8 @@
                     </td>
                 </tr>
                 {% endfor %}
-                {% endfor %}
             </tbody>
+            
         </table>
 
         <div class="adding">

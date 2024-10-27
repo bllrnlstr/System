@@ -16,23 +16,24 @@
             <p><strong>Total Students:</strong> {{ student_count }}</p>
         </div>
 
+        <!-- Users Table -->
         <h2>Users</h2>
         <table>
             <thead>
                 <tr>
                     <th>User ID</th>
-                    <th>Username</th>
-                    <th>Password</th>
-                    <th>Email</th>
                     <th>Role</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Password</th>
                 </tr>
             </thead>
             <tbody>
                 {% for user in users %}
                 <tr>
                     <td>{{ user[0] }}</td>
-                    <td>{{ user[1] }}</td>
-                    <td>{{ user[2] }}</td> 
+                    <td>{{ user[1] }}</td> 
+                    <td>{{ user[2] }}</td>
                     <td>{{ user[3] }}</td> 
                     <td>{{ user[4] }}</td> 
                 </tr>
@@ -40,6 +41,7 @@
             </tbody>
         </table>
 
+        <!-- Teachers Table -->
         <h2>Teachers</h2>
         <table>
             <thead>
@@ -55,15 +57,6 @@
                     <td>{{ teacher[0] }}</td>
                     <td>{{ teacher[1] }}</td>
                     <td>{{ teacher[2] }}</td>
-                    <td>{{ teacher[3] }}</td>
-                    <td>
-                        <select name="section" id="section_{{ teacher[0] }}">
-                            <option value="">{{ teacher[4] }}</option>
-                            {% for section in all_sections %}
-                            <option value="{{ section[0] }}">{{ section[0] }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -99,7 +92,12 @@
         <h2 class="h2">Create Student Account</h2>
         <form action="/create_account" method="POST">
             <label for="user_id">Student ID:</label>
-            <input type="text" id="user_id" name="user_id" required pattern="\d+" title="Please enter a valid student ID.">
+            <select id="user_id" name="user_id" required>
+                <option value="">Select a Student</option>
+                {% for student in students_without_accounts %}
+                <option value="{{ student[0] }}">{{ student[0] }} - {{ student[2] }} {{ student[3] }}</option>
+                {% endfor %}
+            </select>
             
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required title="Username is required.">

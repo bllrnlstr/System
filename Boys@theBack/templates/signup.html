@@ -11,7 +11,7 @@
         <h1>Sign Up</h1>
         <form method="post">
             <div class="input-group">
-                <label for="user_type">User  Type:</label>
+                <label for="user_type">User Type:</label>
                 <select name="user_type" id="user_type" required>
                     <option value="teacher">Teacher</option>
                 </select>
@@ -23,13 +23,19 @@
             </div>
 
             <div class="input-group">
-                <label for="subjects">Subjects:</label>
-                <input type="text" id="subjects" name="subjects" required placeholder="Enter subjects separated by commas">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required placeholder="Enter a username">
             </div>
             <div class="input-group">
                 <label for="sections">Sections:</label>
                 <input type="text" id="sections" name="sections" placeholder="Enter sections (comma-separated)">
             </div>
+
+            <div class="input-group">
+                <label for="sections">Subject:</label>
+                <input type="text" id="subject" name="subject" placeholder="Enter subject">
+            </div>
+
             <div class="input-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" required>

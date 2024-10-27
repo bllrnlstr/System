@@ -21,7 +21,7 @@ class RecordManagementSystem:
         with self.mysql.connection.cursor() as cursor:
             cursor.execute("SELECT * FROM users WHERE username=%s AND role=%s", (username, role))
             user = cursor.fetchone()
-            if user and user[4] == password:  # Check if the stored password matches the provided password
+            if user and user[4] == password: 
                 return user
         return None
 
@@ -63,13 +63,14 @@ class RecordManagementSystem:
         @self.app.route("/signup", methods=['GET', 'POST'])
         def signup():
             if request.method == 'POST':
-                user_type = request.form['user_type']
+                role = request.form['user_type']
                 username = request.form['username']
                 teacher_name = request.form['teacher_name']
                 email = request.form['email']
+                subjects = request.form['subject']
+                sections = request.form['sections']
                 password = request.form['password']
                 confirm_password = request.form['confirm_password']
-                sections = request.form.get('sections', '')
 
                 if password != confirm_password:
                     flash('Passwords do not match', 'danger')
@@ -83,20 +84,28 @@ class RecordManagementSystem:
                         flash('Username already exists', 'danger')
                         return redirect(url_for('signup'))
 
-                    user_data = {
-                        'role': user_type,
-                        'username': username,
-                        'email': email,
-                        'password': password  
-                    }
-                    self.insert_user(user_data)
+                user_data = {
+                    'role': role,
+                    'username': username,
+                    'email': email,
+                    'password': password,
+                }
+                self.insert_user(user_data)
 
-                    teacher_data = {
-                        'name': teacher_name,
-                        'sections': sections
-                    }
-                    self.insert_teacher_info(teacher_data)
+                teacher_data = {
+                    'name': teacher_name,
+                    'sections': sections,
+                }
+                self.insert_teacher_info(teacher_data)
 
+                with self.mysql.connection.cursor() as cursor:
+                    cursor.execute("SELECT teacher_id FROM teacher_info WHERE name = %s", (teacher_name,))
+                    teacher_id = cursor.fetchone()
+                    if teacher_id:
+                        teacher_id = teacher_id[0] 
+                        if subjects:
+                            cursor.execute("INSERT INTO subjects (subject_name, teacher_id) VALUES (%s, %s)", (subjects, teacher_id))
+                            self.mysql.connection.commit()
                 flash('Account created successfully!', 'success')
                 return redirect(url_for('login'))
 
@@ -104,23 +113,28 @@ class RecordManagementSystem:
 
         @self.app.route("/create_account", methods=["GET", "POST"])
         def create_account():
-            if request.method == "POST":
-                user_id = request.form["user_id"]
-                username = request.form["username"]
-                password = request.form["password"]
+            if 'username' in session and session['role'] == 'admin':
+                if request.method == 'POST':
+                    username = request.form.get('username')
+                    password = request.form.get('password')
 
-                with self.mysql.connection.cursor() as cursor:
-                    cursor.execute("SELECT * FROM student_info WHERE user_id = %s", (user_id,))
-                    student = cursor.fetchone()
+                    with self.mysql.connection.cursor() as cursor:
+                        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+                        existing_user = cursor.fetchone ()
 
-                    if student: 
-                        cursor.execute("INSERT INTO users (user_id, username, password) VALUES (%s, %s, %s)", (user_id, username, password))
+                        if existing_user:
+                            flash('Username already taken . Please choose another one.', 'warning')
+                            return redirect(url_for('create_account'))
+                        
+                        cursor.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, %s)", (username, password, 'student'))
                         self.mysql.connection.commit()
-                        flash('Account created successfully!', 'success')
-                        return redirect(url_for('admin_dashboard'))
-                    else:
-                        flash('Student does not exist.', 'danger')
+                        
+                    flash('Account created successfully!', 'success')
+                    return redirect(url_for('admin_dashboard'))
                 return render_template("admin_dashboard.html")
+            else:
+                flash('Access denied', 'danger')
+                return redirect(url_for('login'))
 
         @self.app.route("/teacher_dashboard")
         def teacher_dashboard():
@@ -166,14 +180,19 @@ class RecordManagementSystem:
                 date = now.strftime("%Y-%m-%d")
                 time = now.strftime("%H:%M:%S")
 
+                section_id = session.get('section_id')
+                if section_id is None:
+                    flash('Section ID not found in session', 'danger')
+                    return redirect(url_for('login'))
+
                 with self.mysql.connection.cursor() as cursor:
                     cursor.execute("SELECT title, date, message FROM announcements")
                     announcements = cursor.fetchall()
 
-                    cursor.execute("SELECT title, date FROM deadlines WHERE student_id = %s", (session['username'],))
+                    cursor.execute("SELECT title, date FROM deadlines WHERE section_id = %s", (section_id,))
                     upcoming_deadlines = cursor.fetchall()
 
-                    cursor.execute("SELECT title, date FROM events")
+                    cursor.execute("SELECT title, date FROM events WHERE section_id = %s", (section_id,))
                     upcoming_events = cursor.fetchall()
 
                 return render_template(
@@ -195,37 +214,53 @@ class RecordManagementSystem:
                     cursor.execute("SELECT * FROM users")
                     users = cursor.fetchall()
 
-                    cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'teacher'") 
+                    cursor.execute("SELECT stud_id, f_name, m_name, l_name, year_lvl, section FROM student_info")
+                    students = cursor.fetchall()
+
+                    cursor.execute("""
+                        SELECT student_info.stud_id, student_info.f_name, student_info.m_name, student_info.l_name
+                        FROM student_info WHERE student_info.user_id = 0  -- Select students with no accounts yet (user_id = 0)
+                    """)
+                    students_without_accounts = cursor.fetchall()
+
+                    cursor.execute("SELECT * FROM teacher_info")
+                    teachers = cursor.fetchall()
+
+                    cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'teacher'")
                     teacher_count = cursor.fetchone()[0]
 
                     cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'student'")
                     student_count = cursor.fetchone()[0]
 
-                    cursor.execute("""SELECT stud_id,  f_name, m_name, l_name, year_lvl, section
-                    FROM student_info""")
-                    students = cursor.fetchall()
-
-                    cursor.execute("""SELECT teacher_info.teacher_id, teacher_info.name, sections.section_handled FROM teacher_info LEFT JOIN sections ON teacher_info.teacher_id = sections.teacher_id""")
-                    teachers = cursor.fetchall()
-
-                    cursor.execute("SELECT section_name FROM sections")
+                    cursor.execute("SELECT * FROM sections")
                     all_sections = cursor.fetchall()
-                
 
-                return render_template('admin_dashboard.html', users=users, teacher_count=teacher_count, student_count=student_count, students = students, teachers = teachers, all_sections= all_sections)
+                    students_without_accounts = cursor.execute( "SELECT * FROM student_info WHERE user_id IS NULL")
+                    students_without_accounts = cursor.fetchall() 
+
+                return render_template(
+                    'admin_dashboard.html',
+                    users=users,
+                    teacher_count=teacher_count,
+                    student_count=student_count,
+                    teachers=teachers,
+                    all_sections=all_sections,
+                    students=students, 
+                    students_without_accounts=students_without_accounts  
+                )
             else:
-                flash('Access denied', 'danger')
-                return redirect(url_for('login'))
+                 flash('Access denied', 'danger')
+            return redirect(url_for('login'))
 
         @self.app.route("/students")
         def view_students():
-            with self.mysql.connection.cursor() as cursor:
+            with self.mysql.connection.cursor () as cursor:
                 cursor.execute("SELECT * FROM student_info")
                 students = cursor.fetchall()
             selected_section = request.args.get('section')
             with self.mysql.connection.cursor() as cursor:
                 cursor.execute("SELECT * FROM student_info")
-                students = cursor.fetchall()
+                students = cursor.fetchall ()
             students_by_section = {}
             for student in students:
                 section = student[2]
@@ -239,9 +274,10 @@ class RecordManagementSystem:
         def add_student():
             if request.method == 'POST':
                 student_data = {
-                    'lrn_number': request.form['lrn_number'],
+                    
+                    'lrn_number ': request.form['lrn_number'],
                     'section': request.form['section'],
-                    'first_name': request.form['f_name'],
+                    'first_name': request .form['f_name'],
                     'middle_name': request.form['m_name'],
                     'last_name': request.form['l_name'],
                     'suffix': request.form['suffix'],
@@ -256,7 +292,7 @@ class RecordManagementSystem:
 
                 with self.mysql.connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO student_info (lrn_num, section, f_name, m_name, l_name, suffix, year_lvl, course, address, age, emerg_name, emerg_num, emerg_address) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                        "INSERT INTO student_info ( lrn_num, section, f_name, m_name, l_name, suffix, year_lvl, course, address, age, emerg_name, emerg_num, emerg_address) VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                         tuple(student_data.values())
                     )
                     self.mysql.connection.commit()
@@ -274,11 +310,14 @@ class RecordManagementSystem:
             if 'username' in session and session['role'] == 'teacher':
                 grades= []
                 with self.mysql.connection.cursor() as cursor:
-                    cursor.execute("""  
-                        SELECT f_name, m_name, l_name, quiz_score, attendance_score, 
-                        participation_score, exam_score, total_score
-                        FROM student_info 
-                        JOIN student_scores  ON stud_id = student_id""")
+                    cursor.execute("""
+    SELECT student_info.f_name, student_info.m_name, student_info.l_name, 
+           student_scores.quiz_score, student_scores.attendance_score,
+           student_scores.participation_score, student_scores.exam_score, 
+           student_scores.total_score
+    FROM student_info
+    JOIN student_scores ON student_info.stud_id = student_scores.stud_id
+""")
                     grades = cursor.fetchall()
                 return render_template('view_grades.html', students=grades)
             else:
@@ -344,21 +383,25 @@ class RecordManagementSystem:
 
         @self.app.route("/add-announcement", methods=['GET', 'POST'])
         def add_announcement():
-            if request.method == 'POST':
+            if request .method == 'POST':
                 title = request.form['title']
                 message = request.form['message']
                 date = datetime.now().strftime("%Y-%m-%d")
+                section_id = request.form['section_id']
 
                 with self.mysql.connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO announcements (title, message, date, teacher_id) VALUES (%s, %s, %s, %s)",
-                        (title, message, date, session['username'])
+                        "INSERT INTO announcements (title, message, date, teacher_id, section_id) VALUES (%s, %s, %s, %s, %s)",
+                        (title, message, date, session['username'], section_id)
                     )
                     self.mysql.connection.commit()
 
                 flash('Announcement added successfully!', 'success')
                 return redirect(url_for('teacher_dashboard'))
-            return render_template('add_announcement.html')
+            with self.mysql.connection.cursor() as cursor:
+                cursor.execute("SELECT sections FROM teacher_info")
+                sections = cursor.fetchall()
+            return render_template('add_announcement.html', sections=sections)
 
         @self.app.route("/add-event", methods=['GET', 'POST'])
         def add_event():
@@ -375,7 +418,10 @@ class RecordManagementSystem:
 
                 flash('Event added successfully!', 'success')
                 return redirect(url_for('teacher_dashboard'))
-            return render_template('add_event.html')
+            with self.mysql.connection.cursor() as cursor:
+                cursor.execute("SELECT sections FROM teacher_info")
+                sections = cursor.fetchall()
+            return render_template('add_event.html', sections=sections)
 
         @self.app.route("/add-deadline", methods=['GET', 'POST'])
         def add_deadline():
@@ -392,7 +438,10 @@ class RecordManagementSystem:
 
                 flash('Deadline added successfully!', 'success')
                 return redirect(url_for('teacher_dashboard'))
-            return render_template('add_deadline.html')
+            with self.mysql.connection.cursor() as cursor:
+                cursor.execute("SELECT sections FROM teacher_info")
+                sections = cursor.fetchall()
+            return render_template('add_deadline.html', sections=sections)
 
         @self.app.route("/add-lesson-plan", methods=['GET', 'POST'])
         def add_lesson_plan():
@@ -429,7 +478,7 @@ class RecordManagementSystem:
                 with self.mysql.connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        INSERT INTO student_scores (quiz_score, attendance_behavior_score, class_participation_score, exam_score, total_score)
+                        INSERT INTO student_scores (quiz_score, attendance_score, participation_score, exam_score, total_score)
                         VALUES (%s, %s, %s, %s, %s)
                         """,
                         (quiz_score, attendance_behavior_score, class_participation_score, exam_score, total_score)
@@ -442,18 +491,32 @@ class RecordManagementSystem:
             with self.mysql.connection.cursor() as cursor:
                 cursor.execute("SELECT * FROM student_info")
                 students = cursor.fetchall()
+                
             selected_section = request.args.get('section')
+            selected_subject = request.args.get('subject')
+
+            if selected_section and selected_subject:
+                with self.mysql.connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        SELECT si.*
+                        FROM student_info si
+                        INNER JOIN subjects s ON si.section = %s AND s.subject_name = %s
+                        WHERE si.section = %s AND s.subject_name = %s
+                        """,
+                        (selected_section, selected_subject, selected_section, selected_subject)
+                    )
+                    students = cursor.fetchall()
 
             with self.mysql.connection.cursor() as cursor:
                 cursor.execute("SELECT DISTINCT section FROM student_info")
                 sections = cursor.fetchall()
 
-            if selected_section:
-                with self.mysql.connection.cursor() as cursor:
-                    cursor.execute("SELECT * FROM student_info WHERE section = %s", (selected_section,))
-                    students = cursor.fetchall()
+            with self.mysql.connection.cursor() as cursor:
+                cursor.execute("SELECT DISTINCT subject_name FROM subjects")
+                subjects = cursor.fetchall()
 
-            return render_template('input_student_scores.html', sections=sections, students=students, selected_section=selected_section)
+            return render_template('input_student_scores.html', sections=sections, students=students, subjects=subjects, selected_section=selected_section, selected_subject=selected_subject)
 
         @self.app.route("/add-subject", methods=['GET', 'POST'])
         def add_subject():
